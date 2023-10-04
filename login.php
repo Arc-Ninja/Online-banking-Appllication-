@@ -6,18 +6,15 @@
     if($selectbtn==1){
     $result = $conn->query("select * from users where email='$email' AND password='$password'");
    
-    echo mysqli_num_rows($result);
-    echo " user";
+    
     if($result->num_rows>0)
 		    { 
-		      header('location:home.html');
-          echo " pass";
+		      header('location:userdetails.html');
+          
 		     }
 		else
 		    {
-		      $error = "<div class='alert alert-warning text-center rounded-0'>Username or password wrong try again!</div>";
-          
-          echo " error";
+          echo '<script>alert("Wrong Username or Password!")</script>';
 		    }
     }
     else{
