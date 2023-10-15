@@ -79,20 +79,25 @@ $data = $result->fetch_assoc();
           $name = $_POST['name'];
           $accno = $_POST['accno'];
           $amt = $_POST['amount'];
-          if($amt <= $data['balance']){
-            $cred = "CREDIT";
-            $deb = "DEBIT";
-            
-            $conn->query("UPDATE users SET balance = balance + $amt WHERE accountno = $accno");
-            $stmt = $conn->query("insert into history (accountno,name,amount,type) values ('$accno','$data[name]','$amt','$cred')");
-            
-            $conn->query("UPDATE users SET balance = balance - $amt WHERE email = '$data[email]'");
-            $stmt = $conn->query("insert into history (accountno,name,amount,type) values ('$data[accountno]','$name','$amt','$deb')");
+          $result = $conn->query("select * from users where name='$name' AND accountno='$accno'");
+          if ($result->num_rows>0) {
+            if($amt <= $data['balance']){
+              $cred = "CREDIT";
+              $deb = "DEBIT";
+              
+              $conn->query("UPDATE users SET balance = balance + $amt WHERE accountno = $accno");
+              $stmt = $conn->query("insert into history (accountno,name,amount,type) values ('$accno','$data[name]','$amt','$cred')");
+              
+              $conn->query("UPDATE users SET balance = balance - $amt WHERE email = '$data[email]'");
+              $stmt = $conn->query("insert into history (accountno,name,amount,type) values ('$data[accountno]','$name','$amt','$deb')");
 
-            echo '<script>alert("Transaction Completed!")</script>';
-          }
-          else{
-            echo '<script>alert("Insufficient Balance")</script>';
+              echo '<script>alert("Transaction Completed!")</script>';
+            }
+            else{
+              echo '<script>alert("Insufficient Balance")</script>';
+            }
+          } else {
+            echo '<script>alert("Check Name and AccountNo")</script>';
           }
         }
         ?>
